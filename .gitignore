@@ -1,0 +1,4 @@
+*.log
+server-app
+client_secret*.json
+*.credential*
