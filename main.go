@@ -2,6 +2,7 @@ package main
 
 import (
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +12,7 @@ import (
 )
 
 const scriptID = "MCCJuPe51IX-qdx3z8-7Or6-rz7rtI9Fx"
+const newsFeedURL = "http://www.vlo.gda.pl/vlo/?q=rss.xml"
 
 func init() {
 	file, err := os.OpenFile("./vloapp.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0744)
@@ -60,5 +62,19 @@ func main() {
 	}
 	router.GET("/timetable/group/:group", tt.Handle)
 
+	router.GET("/news", newsHandler)
+
 	log.Fatalln(http.ListenAndServe(":5555", router))
+}
+
+func newsHandler(rw http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+	resp, err := http.DefaultClient.Get(newsFeedURL)
+	if err != nil {
+		rw.WriteHeader(500)
+		return
+	}
+	defer resp.Body.Close()
+	content, err := ioutil.ReadAll(resp.Body)
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Write([]byte(content))
 }

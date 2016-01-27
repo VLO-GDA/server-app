@@ -59,6 +59,7 @@ func (p Proxy) Handle(rw http.ResponseWriter, req *http.Request, ps httprouter.P
 
 	//TODO: Add option to alter this, probably middleware
 	rw.Header().Set("Content-Type", "application/json")
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	//rw.Write([]byte(fmt.Sprintf("%+v", resp.Response)))
 	if value, ok := resp.Response.(map[string]interface{})["result"].(string); ok {
 		rw.Write([]byte(value))

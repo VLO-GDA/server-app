@@ -7,6 +7,12 @@ There's no caching implemented as this will be done using either nginx or custom
 
 Running it requires google account with access to script projects.
 
+Running
+=======
+
+- `client_secret.json` downloaded from https://console.developers.google.com has to be put into binary location.
+- Script id (https://github.com/VLO-GDA/gapp-scripts) needs to be changed to own one.
+
 Endpoints
 =========
 
