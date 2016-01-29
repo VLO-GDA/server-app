@@ -27,6 +27,7 @@ func main() {
 	log.Println("Starting up vloapp")
 
 	client := GetClient("https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/script.external_request")
+
 	// Generate a service object.
 	srv, err := script.New(client)
 	if err != nil {
