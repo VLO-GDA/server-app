@@ -17,7 +17,7 @@ import (
 const tokenFile = "./token.credential"
 
 // GetClient returns the generated Client.
-func GetClient(scope string) *http.Client {
+func GetClient(scopes ...string) *http.Client {
 	ctx := context.Background()
 
 	b, err := ioutil.ReadFile("client_secret.json")
@@ -25,7 +25,7 @@ func GetClient(scope string) *http.Client {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
 
-	config, err := google.ConfigFromJSON(b, scope)
+	config, err := google.ConfigFromJSON(b, scopes...)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}

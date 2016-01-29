@@ -26,7 +26,7 @@ func init() {
 func main() {
 	log.Println("Starting up vloapp")
 
-	client := GetClient("https://www.googleapis.com/auth/spreadsheets")
+	client := GetClient("https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/script.external_request")
 	// Generate a service object.
 	srv, err := script.New(client)
 	if err != nil {
@@ -61,6 +61,13 @@ func main() {
 		},
 	}
 	router.GET("/timetable/group/:group", tt.Handle)
+
+	rq := &Proxy{
+		Service: srv,
+		Script:  scriptID,
+		Name:    "getRandomQuote",
+	}
+	router.GET("/quote", rq.Handle)
 
 	router.GET("/news", newsHandler)
 
