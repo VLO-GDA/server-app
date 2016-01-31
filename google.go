@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 
+	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
@@ -33,8 +34,11 @@ func GetClient(scopes ...string) *http.Client {
 		tok = getTokenFromWeb(config)
 		saveToken(tokenFile, tok)
 	}
-	tokenSource := config.TokenSource(oauth2.NoContext, tok)
-	return oauth2.NewClient(oauth2.NoContext, tokenSource)
+	ctx := context.Background()
+	//Very hacky, but somehow works
+	ts := oauth2.ReuseTokenSource(nil, config.TokenSource(ctx, tok))
+	t, _ := ts.Token()
+	return config.Client(ctx, t)
 }
 
 // getTokenFromWeb uses Config to request a Token.
@@ -62,16 +66,16 @@ func tokenFromFile(file string) (*oauth2.Token, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer f.Close()
 	t := &oauth2.Token{}
 	err = json.NewDecoder(f).Decode(t)
-	defer f.Close()
-	return t, err
+	return &oauth2.Token{RefreshToken: t.RefreshToken}, err
 }
 
 // saveToken uses a file path to create a file and store the
 // token in it.
 func saveToken(file string, token *oauth2.Token) {
-	fmt.Printf("Saving credential file to: %s\n", file)
+	log.Printf("Saving credential file to: %s\n", file)
 	f, err := os.Create(file)
 	if err != nil {
 		log.Fatalf("Unable to cache oauth token: %v", err)
