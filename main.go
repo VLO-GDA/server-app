@@ -67,7 +67,15 @@ func main() {
 		Script:  scriptID,
 		Name:    "getRandomQuote",
 	}
+
 	router.GET("/quote", rq.Handle)
+
+	media := &Proxy{
+		Service: srv,
+		Script:  scriptID,
+		Name:    "getMedia",
+	}
+	router.GET("/media", media.Handle)
 
 	router.GET("/news", newsHandler)
 
